@@ -1,0 +1,8 @@
+name: ece495-a2
+
+dependencies:
+ - jupyterlab
+ - numpy
+ - matplotlib
+ - future
+ - python=3.7
