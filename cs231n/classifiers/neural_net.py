@@ -80,7 +80,10 @@ class TwoLayerNet(object):
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        scores = np.matmul(X, W1) + b1
+        relu = lambda val: max(0, val)
+        scores = np.array([[relu(val) for val in row] for row in scores])
+        scores = np.matmul(scores, W2) + b2
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
