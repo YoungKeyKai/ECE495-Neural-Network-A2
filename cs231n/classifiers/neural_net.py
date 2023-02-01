@@ -5,6 +5,7 @@ from builtins import object
 import numpy as np
 import matplotlib.pyplot as plt
 from past.builtins import xrange
+from math import log, exp
 
 class TwoLayerNet(object):
     """
@@ -117,7 +118,44 @@ class TwoLayerNet(object):
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        # Note: the output logits are not normalized using a softmax function
+        # so it will be applied now
+        def softmax(row):
+            # Convert the row's scores into e^(score)
+            row = [exp(score) for score in row]
+
+            # Find the sum of the row to normalize all the values
+            sum_of_row = sum(row)
+
+            # Return the normalized row
+            return [score / sum_of_row for score in row]
+        scores = [softmax(row) for row in scores]
+
+        # Initialize loss variable
+        loss = 0
+
+        # Identify each input data point by its index to go through each
+        for datapoint_index in range(0, N):
+            correct_class = y[datapoint_index]
+
+            # The softmax loss for each input data point is -log(P(y))
+            # where P(y) is the probability we generate for the correct class.
+            data_loss = -log(scores[datapoint_index][correct_class])
+            
+            # The total loss requires the sum of all loss for each data point
+            loss += data_loss
+
+        # The total loss is averaged over the number of data points
+        loss /= N
+
+        # The regularization method that we are using is L2 regularization (i.e., ridge regularization).
+        # The loss for the whole model is the sum of the squares of the weights, both W1 and W2.
+        squared_weights_1 = W1 * W1
+        squared_weights_2 = W2 * W2
+        loss += reg * np.sum(squared_weights_1)
+        loss += reg * np.sum(squared_weights_2)
+
+        # Note: here we do not add the 0.5 regularization multiplier
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
