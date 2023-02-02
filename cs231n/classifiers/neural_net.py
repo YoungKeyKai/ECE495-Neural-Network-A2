@@ -195,6 +195,16 @@ class TwoLayerNet(object):
         dL_dW2 += 2 * reg * W2
         grads['W2'] = dL_dW2
 
+        # Differential between the scores (logits) and the bias b2 is just 1 (because it's just addition),
+        # hence, it essentially copies the differential of the loss with respect to the score (logit) values.
+        # However, since we have N different data points, we need to sum their individual differentials for each class.
+        grads['b2'] = []
+        for class_index in range(len(dLoss_dScore[0])):
+            differential_sum = 0
+            for row in dLoss_dScore:
+                differential_sum += row[class_index]
+            grads['b2'] += [differential_sum,]
+
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return loss, grads
