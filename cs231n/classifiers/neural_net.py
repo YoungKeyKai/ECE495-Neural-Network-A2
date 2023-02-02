@@ -85,7 +85,7 @@ class TwoLayerNet(object):
         # The weight matrix has H neurons, each with D separate weights,
         # where each weight corresponds to a dimension in the input.
         # The resulting matrix is N x H (one set of weights per neuron for each input)
-        scores = np.matmul(X, W1) + b1
+        input_to_relu = np.matmul(X, W1) + b1
 
         # Define the ReLU neuron activation function,
         # i.e., negative values are zeroed, positive values are retained as is
@@ -95,12 +95,12 @@ class TwoLayerNet(object):
         # on a row by row basis,
         # i.e., generate a new array for each row in the original scores matrix
         # where the function is applied over each value
-        scores = np.array([[relu(val) for val in row] for row in scores])
+        output_of_relu = np.array([[relu(val) for val in row] for row in input_to_relu])
 
         # Multiply the resulting score matrix with the second layer's weights, then add the biases.
         # The weight matrix has H neurons but now each group of 10 are linked to a distinct output class.
         # The output matrix here is N x C (one set of class predictions per input)
-        scores = np.matmul(scores, W2) + b2
+        scores = np.matmul(output_of_relu, W2) + b2
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -129,7 +129,7 @@ class TwoLayerNet(object):
 
             # Return the normalized row
             return [score / sum_of_row for score in row]
-        scores = [softmax(row) for row in scores]
+        probabilities = [softmax(row) for row in scores]
 
         # Set a loss variable for sum of loss from data only
         data_loss = 0
@@ -141,7 +141,7 @@ class TwoLayerNet(object):
             # The softmax loss for each input data point is -log(P(y))
             # where P(y) is the probability we generate for the correct class.
             # The total loss requires the sum of all loss for each data point.
-            data_loss += -log(scores[datapoint_index][correct_class])
+            data_loss += -log(probabilities[datapoint_index][correct_class])
 
         # The total data loss is averaged over the number of data points
         data_loss /= N
